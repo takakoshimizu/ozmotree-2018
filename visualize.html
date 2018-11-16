@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>DropTreeViz</title>
+</head>
+<body>
+  <div id="treeContainer">
+    FIRST LIGHT
+  </div>
+
+  <script type="text/javascript">
+    function setLights(lightArr) {
+      const container = document.getElementById('treeContainer');
+      //container.innerHTML = '';
+      
+      const firstLight = lightArr[0];
+      container.style.backgroundColor = `rgb(${firstLight.r}, ${firstLight.g}, ${firstLight.b})`;
+    }
+
+    function getLights() {
+      fetch('http://localhost:3000/lights')
+        .then(res => res.json())
+        .then(data => setLights(data.lights))
+        .then(() => {
+          setTimeout(getLights, 20);
+        });
+    }
+
+    getLights();
+  </script>
+</body>
+</html>

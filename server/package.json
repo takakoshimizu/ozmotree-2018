@@ -1,0 +1,17 @@
+{
+  "name": "ozmotree-2018-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Erich Dalton <erich.dalton@ozmoapp.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@feathersjs/express": "^1.2.7",
+    "@feathersjs/feathers": "^3.2.3",
+    "cors": "^2.8.5",
+    "esm": "^3.0.84"
+  },
+  "esm": {
+    "mode": "auto"
+  }
+}

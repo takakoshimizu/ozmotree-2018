@@ -1,0 +1,11 @@
+{
+  "name": "ozmotree-2018",
+  "version": "1.0.0",
+  "description": "2018's Christmas tree: DropTree/TreeMix.",
+  "main": "./server/index.js",
+  "repository": "git@github.com:takakoshimizu/ozmotree-2018.git",
+  "author": "Erich Dalton <erich.dalton@ozmoapp.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {}
+}
