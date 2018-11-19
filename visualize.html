@@ -1,19 +1,55 @@
 <html>
 <head>
-  <title>DropTreeViz</title>
+  <title>DropTreeViz (Timing)</title>
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      background-color: #000;
+    }
+
+    #treeContainer {
+      display: block;
+      height: 50px;
+      flex: 1;
+      width: 900px;
+    }
+  </style>
 </head>
 <body>
-  <div id="treeContainer">
+  <canvas id="treeContainer">
     FIRST LIGHT
-  </div>
+  </canvas>
 
   <script type="text/javascript">
+    function componentToHex(c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function rgbToHex([r, g, b]) {
+      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    }
+
     function setLights(lightArr) {
       const container = document.getElementById('treeContainer');
-      //container.innerHTML = '';
-      
-      const firstLight = lightArr[0];
-      container.style.backgroundColor = `rgb(${firstLight.r}, ${firstLight.g}, ${firstLight.b})`;
+      const ctx = container.getContext('2d');
+      ctx.save();
+      ctx.clearRect(0, 0, container.width, container.height);
+      ctx.restore();
+
+      for (let ix = 0; ix < 900; ix++) {
+        const light = lightArr[ix];
+        const color = rgbToHex(light);
+        ctx.beginPath();
+        ctx.moveTo(ix, 0);
+        ctx.lineTo(ix, 100);
+        ctx.strokeStyle = color;
+
+        ctx.stroke();
+      }
     }
 
     function getLights() {
@@ -24,7 +60,6 @@
           setTimeout(getLights, 20);
         });
     }
-
     getLights();
   </script>
 </body>

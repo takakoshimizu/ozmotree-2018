@@ -1,3 +1,6 @@
+const { spawn } = require('child_process');
+const path = require('path');
+
 export default class Song {
   constructor(filename) {
     this.notes = [];
@@ -6,8 +9,18 @@ export default class Song {
 
     this.nextNoteTimeout = null;
     this.advanceNote = this.advanceNote.bind(this);
-    this.start = this.advanceNote;
     this.stop = this.reset;
+  }
+
+  start(doneCb) {
+    const songPath = path.resolve(__dirname, '..', 'songs', this.getFilename());
+    console.log('starting:', songPath);
+    const song = spawn('mplayer', [songPath]);
+    if (doneCb) song.on('close', doneCb);
+    song.stderr.on('data', data => console.error(data.toString()));
+    song.stdout.on('data', data => {});
+
+    this.advanceNote();
   }
 
   getFilename() {
@@ -15,13 +28,19 @@ export default class Song {
   }
 
   advanceNote() {
+    const currentNote = this.getCurrent();
+    let currentDuration = 0
+    if (currentNote) {
+      currentDuration = currentNote.getDuration();
+    }
+
     this.position++;
     if (this.position >= this.notes.length) {
       this.position = 0;
     }
 
-    const note = this.getCurrent();
-    const nextTimeout = note.getDuration();
+    const nextNote = this.getCurrent();
+    const nextTimeout = nextNote.getDuration() - currentDuration;
 
     if (this.nextNoteTimeout) clearTimeout(this.nextNoteTimeout);
     this.nextNoteTimeout = setTimeout(this.advanceNote, nextTimeout);

@@ -1,12 +1,15 @@
 import { createLight } from '../../common/lights';
 import jingleBells from '../songs/jingle-bells';
 
-const NUM_LIGHTS = process.env.NUM_LIGHTS || 2;
 const TOTAL_LIGHTS = process.env.TOTAL_LIGHTS || 900;
+
+const nextSong = () => {
+  this.song.reset(); // testing purposes
+};
 
 export default class Lights {
   constructor() {
-    this.lights = new Array(NUM_LIGHTS).fill(createLight(0, 0, 0));
+    this.lights = [createLight(255, 0, 0), createLight(0, 255, 0)];
     this.song = jingleBells;
   }
 
@@ -16,7 +19,8 @@ export default class Lights {
 
   async find() {
     if (!this.song.isRunning()) {
-      this.song.start();
+      console.log('starting song');
+      this.song.start(nextSong.bind(this));
     }
 
     const note = this.song.getCurrent();
@@ -24,7 +28,7 @@ export default class Lights {
     const lights = pattern(this.lights, TOTAL_LIGHTS);
     const doneTime = note.getNextTime();
 
-    return { lights, next: doneTime };
+    return { lights: lights.map(l => [l.r, l.g, l.b]), next: doneTime };
   }
 
   async get(id) {

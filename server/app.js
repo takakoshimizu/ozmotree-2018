@@ -10,7 +10,7 @@ app.configure(express.rest());
 app.use(express.errorHandler());
 app.use(cors());
 
-app.use('lights', new Lights ());
+app.use('lights', new Lights());
 
 const server = app.listen(3000);
 
