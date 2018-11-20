@@ -10,13 +10,11 @@ export const allColor2 = createPattern((lights, size) => {
   return new Array(size).fill(light);
 });
 
-export const twoThree = createPattern((lights) => {
-  return [lights[0], lights[0], lights[1], lights[1], lights[1]];
-});
+const twoThreeGen = lights => [lights[0], lights[0], lights[1], lights[1], lights[1]];
+export const twoThree = createPattern(twoThreeGen);
 
-export const threeTwo = createPattern((lights) => {
-  return [lights[0], lights[0], lights[0], lights[1], lights[1]];
-});
+const threeTwoGen = lights => [lights[0], lights[0], lights[0], lights[1], lights[1]];
+export const threeTwo = createPattern(threeTwoGen);
 
 export const chaserGen = (msPerStep = 100, startPosition = 0, spacing = 10, length = 1) => {
   let lastTime = new Date();
@@ -65,7 +63,46 @@ export const chaserGen = (msPerStep = 100, startPosition = 0, spacing = 10, leng
   }
 };
 
-const chaserBase = chaserGen(30, 0, 5, 5);
+const chaserBase = chaserGen(30, 0, 5, 1);
 
 export const singleChaser = createPattern(chaserBase());
 export const singleChaserReverse = createPattern(chaserBase(1));
+
+export const spread = (lightIndex = 0, msPerStep = 100) => {
+  let lastTime = new Date();
+  let growthTerm = 1;
+  let lightCache = null;
+
+  return function(lights, size) {
+    const light = lights[lightIndex];
+    const halfLength = Math.round(size / 2);
+    const now = new Date();
+
+    let toCreate = Math.round(Math.log(growthTerm) ** Math.log(growthTerm)) * 2;
+
+    if (now.getTime() > lastTime.getTime() + msPerStep) {
+      if (toCreate < halfLength) {
+        lightCache = null;
+        growthTerm++;
+      }
+    }
+
+    if (lightCache) return lightCache;
+
+    let startArray = [];
+    if (lightIndex == -1) {
+      while (startArray.length < toCreate) {
+        startArray = startArray.concat(lights);
+      }
+      startArray = startArray.slice(0, toCreate);
+    } else {
+      startArray = new Array(toCreate).fill(light);
+    }
+    const endArray = new Array(Math.max(0, halfLength - toCreate)).fill({ r: 0, g: 0, b: 0 });
+    const halfArray = startArray.concat(endArray);
+
+    const fullArray = halfArray.slice(0, halfLength).reverse().concat(halfArray).slice(0, size);
+    lightCache = fullArray;
+    return fullArray;
+  }
+};

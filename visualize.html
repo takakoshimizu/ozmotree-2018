@@ -40,7 +40,8 @@
       ctx.clearRect(0, 0, container.width, container.height);
       ctx.restore();
 
-      for (let ix = 0; ix < 900; ix++) {
+      const len = lightArr.length;
+      for (let ix = 0; ix < len; ix++) {
         const light = lightArr[ix];
         const color = rgbToHex(light);
         ctx.beginPath();

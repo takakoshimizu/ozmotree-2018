@@ -41,7 +41,7 @@ export default class Song {
 
     const nextNote = this.getCurrent();
     const nextTimeout = nextNote.getDuration() - currentDuration;
-
+    
     if (this.nextNoteTimeout) clearTimeout(this.nextNoteTimeout);
     this.nextNoteTimeout = setTimeout(this.advanceNote, nextTimeout);
   }

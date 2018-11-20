@@ -3,13 +3,13 @@ import jingleBells from '../songs/jingle-bells';
 
 const TOTAL_LIGHTS = process.env.TOTAL_LIGHTS || 900;
 
-const nextSong = () => {
-  this.song.reset(); // testing purposes
+const nextSong = _this => () => {
+  _this.song.reset(); // testing purposes
 };
 
 export default class Lights {
   constructor() {
-    this.lights = [createLight(255, 0, 0), createLight(0, 255, 0)];
+    this.lights = [createLight(0, 144, 255), createLight(0, 219, 197)];
     this.song = jingleBells;
   }
 
@@ -20,7 +20,7 @@ export default class Lights {
   async find() {
     if (!this.song.isRunning()) {
       console.log('starting song');
-      this.song.start(nextSong.bind(this));
+      this.song.start(nextSong(this));
     }
 
     const note = this.song.getCurrent();
