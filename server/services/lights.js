@@ -1,5 +1,6 @@
 import { createLight } from '../../common/lights';
 import jingleBells from '../songs/jingle-bells';
+import letItSnow from '../songs/let-it-snow';
 
 const TOTAL_LIGHTS = process.env.TOTAL_LIGHTS || 900;
 
@@ -10,7 +11,7 @@ const nextSong = _this => () => {
 export default class Lights {
   constructor() {
     this.lights = [createLight(0, 144, 255), createLight(0, 219, 197)];
-    this.song = jingleBells;
+    this.song = letItSnow;
   }
 
   lightId(id) {

@@ -68,7 +68,7 @@ const chaserBase = chaserGen(30, 0, 5, 1);
 export const singleChaser = createPattern(chaserBase());
 export const singleChaserReverse = createPattern(chaserBase(1));
 
-export const spread = (lightIndex = 0, msPerStep = 100) => {
+export const spread = (lightIndex = 0, msPerStep = 100, growthExponent = 2) => {
   let lastTime = new Date();
   let growthTerm = 1;
   let lightCache = null;
@@ -78,21 +78,19 @@ export const spread = (lightIndex = 0, msPerStep = 100) => {
     const halfLength = Math.round(size / 2);
     const now = new Date();
 
-    let toCreate = Math.round(Math.log(growthTerm) ** Math.log(growthTerm)) * 2;
+    let toCreate = Math.min(halfLength, Math.round(Math.log(growthTerm) ** Math.log(growthTerm)) * growthExponent);
 
     if (now.getTime() > lastTime.getTime() + msPerStep) {
-      if (toCreate < halfLength) {
-        lightCache = null;
-        growthTerm++;
-      }
+      lightCache = null;
+      if (toCreate != halfLength) growthTerm++;
     }
 
     if (lightCache) return lightCache;
 
     let startArray = [];
     if (lightIndex == -1) {
-      while (startArray.length < toCreate) {
-        startArray = startArray.concat(lights);
+      while (startArray.length <= toCreate) {
+        startArray = startArray.concat([...allColor1(lights, 3), ...allColor2(lights, 3)]);
       }
       startArray = startArray.slice(0, toCreate);
     } else {
