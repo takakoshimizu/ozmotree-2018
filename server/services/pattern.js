@@ -1,5 +1,5 @@
 function createPattern(genFunc) {
-  return function(lights, size) {
+  const retFunc = function(lights, size) {
     let pattern = [];
 
     while(pattern.length < size) {
@@ -14,6 +14,14 @@ function createPattern(genFunc) {
       return pattern;
     }
   };
+
+  retFunc.reset = function() {
+    if (genFunc.reset) {
+      genFunc.reset();
+    }
+  }
+
+  return retFunc;
 }
 
 export default createPattern;
