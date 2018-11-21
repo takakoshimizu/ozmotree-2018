@@ -71,7 +71,7 @@ const song = [
   { pattern: threeTwo, delay: 45771 }
 ];
 
-const JingleBells = new Song("jingle-bells.mp3");
+const JingleBells = new Song("jingle-bells.mp4");
 for (const note of song) {
   JingleBells.addNote(Note(note.pattern, note.delay));
 }

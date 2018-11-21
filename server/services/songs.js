@@ -20,7 +20,7 @@ export default class Song {
     const song = spawn("mplayer", [songPath]);
     if (doneCb) song.on("close", doneCb);
     song.stderr.on("data", data => console.error(data.toString()));
-    song.stdout.on("data", data => {});
+    song.stdout.on("data", () => {});
 
     this.advanceNote();
   }

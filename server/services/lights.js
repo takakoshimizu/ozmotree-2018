@@ -3,8 +3,10 @@ import { singleChaser } from "./patterns";
 
 import jingleBells from "../songs/jingle-bells";
 import letItSnow from "../songs/let-it-snow";
+import rockinAround from '../songs/rocking-around';
+import babyShark from '../songs/baby-shark';
 
-const playlist = [letItSnow, jingleBells];
+const playlist = [babyShark, rockinAround, letItSnow, jingleBells];
 
 const IDLE_PATTERN = singleChaser;
 const IDLE_TIME = process.env.IDLE_TIME

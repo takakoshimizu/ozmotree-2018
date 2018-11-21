@@ -37,7 +37,7 @@ const song = [
   { pattern: spread(-1, 100), delay: 32000 }
 ];
 
-const LetItSnow = new Song("let-it-snow.mp3");
+const LetItSnow = new Song("let-it-snow.mp4");
 for (const note of song) {
   LetItSnow.addNote(Note(note.pattern, note.delay));
 }
