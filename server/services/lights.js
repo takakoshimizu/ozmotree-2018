@@ -6,7 +6,7 @@ import letItSnow from "../songs/let-it-snow";
 import rockinAround from '../songs/rocking-around';
 import babyShark from '../songs/baby-shark';
 
-const playlist = [babyShark, rockinAround, letItSnow, jingleBells];
+const playlist = [rockinAround, letItSnow, jingleBells];
 
 const IDLE_PATTERN = singleChaser;
 const IDLE_TIME = process.env.IDLE_TIME
@@ -33,9 +33,14 @@ export default class Lights {
   }
 
   nextSong() {
-    this.songIdx++;
-    if (this.songIdx >= playlist.length) {
-      this.songIdx = 0;
+    const rand = Math.floor(Math.random() * 20 + 1);
+    if (rand === 1) {
+      this.songIdx = -1;
+    } else {
+      this.songIdx++;
+      if (this.songIdx >= playlist.length) {
+        this.songIdx = 0;
+      }
     }
 
     this.song = playlist[this.songIdx];
@@ -72,7 +77,7 @@ export default class Lights {
 
   async patch(id, light) {
     this.lights[this.lightId(id)] = createLight(light.r, light.g, light.b);
-    if (!this.song) this.nextSong();
+    //if (!this.song) this.nextSong();
     return this.lights[this.lightId(id)];
   }
 }

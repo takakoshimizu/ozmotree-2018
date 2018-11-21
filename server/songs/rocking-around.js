@@ -20,17 +20,17 @@ const refrainChaserIn = createPattern(refrainChaser(-1));
 const refrainChaserOut = createPattern(refrainChaser(1));
 
 const song = [
-  { pattern: allColor1, delay: 2970 },
-  { pattern: allColor2, delay: 4320 },
-  { pattern: allColor1, delay: 10962 },
-  { pattern: allColor2, delay: 14364 },
-  { pattern: allColor1, delay: 16038 },
-  { pattern: allColor2, delay: 17820 },
-  { pattern: allColor1, delay: 21168 },
-  { pattern: allColor2, delay: 23382 },
-  { pattern: allColor1, delay: 24570 },
-  { pattern: allColor2, delay: 27432 },
-  { pattern: allColor1, delay: 31914 }
+  { pattern: startChaserIn, delay: 2970 },
+  { pattern: startChaserOut, delay: 4320 },
+  { pattern: refrainChaserIn, delay: 10962 },
+  { pattern: spread(-1, 200), delay: 14364 },
+  { pattern: twoThree, delay: 16038 },
+  { pattern: spread(0, 200), delay: 17820 },
+  { pattern: startChaserIn, delay: 21168 },
+  { pattern: startChaserOut, delay: 23382 },
+  { pattern: refrainChaserIn, delay: 24570 },
+  { pattern: refrainChaserOut, delay: 27432 },
+  { pattern: spread(-1, 200), delay: 31914 }
 ];
 
 const RockinAround = new Song("rocking-around.mp4");
