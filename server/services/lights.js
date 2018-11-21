@@ -46,11 +46,12 @@ export default class Lights {
     this.song = playlist[this.songIdx];
   }
 
-  async find() {
+  async find(params) {
     if (this.song && !this.song.isRunning()) {
       console.log("starting song");
       this.song.start(this.beginIdle.bind(this));
     }
+    console.log(params);
 
     if (this.song) {
       const note = this.song.getCurrent();
@@ -58,11 +59,18 @@ export default class Lights {
       const lights = pattern(this.lights, TOTAL_LIGHTS);
       const doneTime = note.getNextTime();
 
-      return { lights: lights.map(l => [l.r, l.g, l.b]), next: doneTime };
+      if (params.query.type === 'csv') {
+        return lights.map(l => `${l.r},${l.g},${l.b}`).join('\n');
+      }
+      return lights.map(l => [l.r, l.g, l.b]);
     }
 
     const lights = IDLE_PATTERN(this.lights, TOTAL_LIGHTS);
-    return { lights: lights.map(l => [l.r, l.g, l.b]), next: new Date() + 100 };
+    if (params.query.type === 'csv') {
+      return lights.map(l => `${l.r},${l.g},${l.b}`).join('\n');
+    }
+    
+    return lights.map(l => [l.r, l.g, l.b]);
   }
 
   async get(id) {
