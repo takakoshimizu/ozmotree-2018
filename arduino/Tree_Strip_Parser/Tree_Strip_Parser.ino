@@ -12,8 +12,8 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <Adafruit_NeoPixel.h>
+//If you have ~300 lights you could use ArduinoJSON but at 900 there is not enough memory. 
 
 #define PIN 14
 
@@ -23,10 +23,6 @@
 
 char ssid[] = "OzmoTree";       // your network SSID (name)
 char password[] = "4Tree4Tree";
-
-//  Defining the JSON buffer to hold an array of LED colors
-const size_t bufferSize = NUM_LEDS*JSON_ARRAY_SIZE(3) + JSON_ARRAY_SIZE(NUM_LEDS) + JSON_OBJECT_SIZE(2) + 8030;
-DynamicJsonBuffer jsonBuffer(bufferSize);
 
 // Depending on your lights you might have to modify the colorspace or frequency
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
@@ -84,18 +80,51 @@ void setup() {
 void loop() {
   Serial.println("Starting Request");
   String json = getStripColorArray();
-  JsonObject& root = jsonBuffer.parseObject(json);
-  // This is for the watchdog timer in ESP8266
-  delay(0);
-  JsonArray& lights = root["lights"];
-  // Light up the pixels
-  for(i=0; i< NUM_LEDS; i++) {
-    JsonArray& pixel = lights[i]
-    strip.setPixelColor(i, strip.Color((int)pixel[0], (int)pixel[1], (int)pixel[2]));
-  }
+  parseLights(json);
   strip.show();
   // This is for the watchdog timer in ESP8266
-  delay(25);
+  delay(0);
+}
+
+void parseLights(String lights){
+int pixel =0;
+bool parsing = true;
+lights.remove(0, 2);
+while (parsing) {
+  int openBrack = lights.indexOf("]");
+  if(openBrack == -1){
+    parsing = false;
+    Serial.println("FinishedParsing");
+    return;
+  }
+  String curval = getValue(lights, ']', 0);
+    int red = getValue(lights, ',', 0).toInt();
+    int green = getValue(lights, ',', 1).toInt();
+    int blue = getValue(lights, ',', 2).toInt();
+    strip.setPixelColor(pixel, strip.Color(red, green, blue));
+//    Watchdog
+    delay(0);
+  lights.remove(0, openBrack + 3);
+  pixel++;
+  //    Watchdog
+}
+ delay(0);
+}
+
+String getValue(String data, char separator, int index)
+{
+    int found = 0;
+    int strIndex[] = { 0, -1 };
+    int maxIndex = data.length() - 1;
+
+    for (int i = 0; i <= maxIndex && found <= index; i++) {
+        if (data.charAt(i) == separator || i == maxIndex) {
+            found++;
+            strIndex[0] = strIndex[1] + 1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
 String getStripColorArray(){
