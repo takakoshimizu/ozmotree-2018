@@ -10,6 +10,8 @@
 //  Date: 11/20/2018
 //  ******************************************************************
 
+// This approach requires under 300 lights or it will overrun the json buffer on a nodemcu
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
@@ -24,9 +26,7 @@
 char ssid[] = "OzmoTree";       // your network SSID (name)
 char password[] = "4Tree4Tree";
 
-//  Defining the JSON buffer to hold an array of LED colors
-const size_t bufferSize = NUM_LEDS*JSON_ARRAY_SIZE(3) + JSON_ARRAY_SIZE(NUM_LEDS) + JSON_OBJECT_SIZE(2) + 8030;
-DynamicJsonBuffer jsonBuffer(bufferSize);
+
 
 // Depending on your lights you might have to modify the colorspace or frequency
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
@@ -70,7 +70,7 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     // Might as well show pretty colors while we wait
-    rainbowCycle(20);
+    rainbowCycle(5);
     delay(500);
   }
   Serial.println("");
@@ -82,20 +82,34 @@ void setup() {
 }
 // Should have a delay of less that 500ms total in order to keep up with song timing
 void loop() {
+  //  Defining the JSON buffer to hold an array of LED colors
+  const size_t bufferSize = NUM_LEDS*JSON_ARRAY_SIZE(3) + JSON_ARRAY_SIZE(NUM_LEDS) + JSON_OBJECT_SIZE(2) + 8030;
+  DynamicJsonBuffer jsonBuffer(bufferSize);
   Serial.println("Starting Request");
-  String json = getStripColorArray();
+  const char* json = getStripColorArray().c_str();
   JsonObject& root = jsonBuffer.parseObject(json);
+  if (!root.success()){
+    Serial.println(F("Failed to read file, using default configuration"));
+    rainbowCycle(25);
+  }
+  else{
   // This is for the watchdog timer in ESP8266
-  delay(0);
+  delay(25);
+  root.printTo(Serial);
   JsonArray& lights = root["lights"];
+  delay(25);
   // Light up the pixels
+  int i;
   for(i=0; i< NUM_LEDS; i++) {
-    JsonArray& pixel = lights[i]
+    JsonArray& pixel = lights[i];
+    pixel.printTo(Serial);
+    Serial.print((int)pixel[0]);
     strip.setPixelColor(i, strip.Color((int)pixel[0], (int)pixel[1], (int)pixel[2]));
   }
   strip.show();
   // This is for the watchdog timer in ESP8266
   delay(25);
+  }
 }
 
 String getStripColorArray(){
