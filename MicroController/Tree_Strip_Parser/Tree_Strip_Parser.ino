@@ -14,8 +14,8 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <Adafruit_NeoPixel.h>
+//If you have ~300 lights you could use ArduinoJSON but at 900 there is not enough memory. 
 
 #define PIN 14
 
