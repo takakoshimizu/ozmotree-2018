@@ -3,6 +3,7 @@ This section covers the hardware used along with the firmware needed.
 
 ## Structure
 ---
+
 ---
 
 ## Schematics
@@ -10,6 +11,8 @@ This section covers the hardware used along with the firmware needed.
 ---
 ## Notes
 ---
+- For actually handling the lighting of the tree a NodeMCU was initially chosen but the RGB array for the lights turn out to be too much the microcontroller to handle. Especially to keep up with music timings as well as maintain the wifi connection. As a proof we left the code in this repo but we would not recommend running more than 300 pixels with it. 
+- The raspberry pi requires some config outside of this repo. We'd recommend following this guide for installing the prerequisites and testing the light strip out: [Adafruit Learning System Neopixel RasPi](https://learn.adafruit.com/neopixels-on-raspberry-pi/overview)
 ---
 
 
