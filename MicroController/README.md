@@ -3,7 +3,7 @@ This section covers the hardware used along with the firmware needed.
 
 ## Structure
 ---
-[dataflow diagram](media/DataFlow.png "Data Flow Diagram")
+![alt dataflow diagram](media/DataFlow.png "Data Flow Diagram")
 ---
 
 ## Schematics
