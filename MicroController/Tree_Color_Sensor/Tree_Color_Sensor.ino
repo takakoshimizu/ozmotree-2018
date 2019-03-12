@@ -20,7 +20,26 @@ char ssid[] = "OzmoTree";       // your network SSID (name)
 char password[] = "4Tree4Tree";
 
 const size_t bufferSize = JSON_OBJECT_SIZE(3);
-DynamicJsonBuffer jsonBuffer(bufferSize);
+
+
+byte neopix_gamma[] = {
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
+    1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,
+    2,  3,  3,  3,  3,  3,  3,  3,  4,  4,  4,  4,  4,  5,  5,  5,
+    5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  9,  9,  9, 10,
+   10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
+   17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
+   25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
+   37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
+   51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
+   69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
+   90, 92, 93, 95, 96, 98, 99,101,102,104,105,107,109,110,112,114,
+  115,117,119,120,122,124,126,127,129,131,133,135,137,138,140,142,
+  144,146,148,150,152,154,156,158,160,162,164,167,169,171,173,175,
+  177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
+  215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
+
 
 //We found 700ms and 4X gain to be ideal for our application of laying a card on top of the sensor. 
 Adafruit_TCS34725 colorSensor = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_4X);
@@ -33,6 +52,13 @@ void setup() {
       Serial.println("No TCS34725 found ... check your connections");
       while (1);
   }
+  connect();
+  
+}
+
+void connect(){
+  WiFi.mode(WIFI_OFF);
+  delay(1000);
    //Connect to wifi:
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -53,6 +79,11 @@ void setup() {
 }
 
 void loop() {
+  
+  if(WiFi.status() != WL_CONNECTED) {
+    Serial.println("Disconnected from WiFi");
+    connect();
+  }
   uint16_t clear, red, green, blue, colorTemp, lux;
   colorSensor.setInterrupt(false); //Turn on the LED
   delay(710);  // takes 700ms to read 
@@ -90,13 +121,14 @@ void loop() {
   Serial.print(", ") ;
   Serial.println(lux);
 // The server need a patch request to update the values. 
-  patchColor((int)r, (int)g, (int)b);
+  patchColor(neopix_gamma[(int)r], neopix_gamma[(int)g], neopix_gamma[(int)b]);
 // Set the interval for updates.
   delay(3000);
 }
 
 void patchColor(int r, int g, int b){
 // Build the JSON object
+  DynamicJsonBuffer jsonBuffer(bufferSize);
   JsonObject& root = jsonBuffer.createObject();
   root["r"] = r;
   root["g"] = g;
